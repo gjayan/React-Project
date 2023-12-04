@@ -4,10 +4,6 @@ COPY . .
 
 RUN ls -alrt
 
-WORKDIR React-Project
-
-RUN ls -alrt
-
 RUN pwd
 
 RUN npm install
