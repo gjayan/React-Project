@@ -2,7 +2,7 @@ FROM node:10.15.2-alpine as builder
 
 COPY . .
 
-WORKDIR React-project
+WORKDIR React-Project
 
 RUN ls -alrt
 
