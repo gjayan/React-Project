@@ -2,7 +2,13 @@ FROM node:10.15.2-alpine as builder
 
 WORKDIR React-project
 
+RUN ls -alrt
+
+RUN pwd
+
 RUN npm install
+
+RUN pwd && ls -alrt
 
 RUN npm run-script build
 
