@@ -2,15 +2,10 @@ FROM node:10.15.2-alpine as builder
 
 COPY . .
 
-RUN ls -alrt
-
-RUN pwd
-
 RUN npm install
 
-RUN pwd && ls -alrt
-
 RUN npm run-script build
+
 
 FROM nginx:latest
 
