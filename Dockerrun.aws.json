@@ -1,1 +1,13 @@
-.
+{
+        "AWSEBDockerrunVersion": "1",
+        "Image": {
+          "Name": "775422423362.dkr.ecr.ap-south-1.amazonaws.com/gayathri-ecr",
+          "Update": "true"
+        },
+        "Ports": [
+          {
+            "ContainerPort": "80",
+            "HostPort": "80"
+          }
+        ]
+}
