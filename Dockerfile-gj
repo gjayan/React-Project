@@ -9,4 +9,4 @@ RUN npm run-script build
 
 FROM nginx:latest
 
-COPY --from=builder React-project/build/. /usr/share/nginx/html/
+COPY --from=builder build/. /usr/share/nginx/html/
