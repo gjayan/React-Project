@@ -1,7 +1,7 @@
 {
         "AWSEBDockerrunVersion": "1",
         "Image": {
-          "Name": "775422423362.dkr.ecr.ap-south-1.amazonaws.com/gayathri-ecr",
+          "Name": "775422423362.dkr.ecr.ap-south-1.amazonaws.com/gayathri-ecr:dc955e6",
           "Update": "true"
         },
         "Ports": [
