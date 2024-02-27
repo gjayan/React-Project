@@ -4,8 +4,12 @@ AWS_ACCOUNT_ID=775422423362
 AWS_REGION=ap-south-1
 IMAGE_REPO_NAME=gayathri-ecr
 TASK_FAMILY=gayathri-react
-ECS_CLUSTER=gayathri-ecs-cluster
-SERVICE_NAME=gayathri-service1
+ECS_CLUSTER=dev
+SERVICE_NAME=gayathri-service-react
+
+
+
+
 
 #Script to get current task definition, and based on that add new ecr image address to old template and remove attributes that are not needed, then we send new task definition, get new revision number from output and update service
 #set -e
