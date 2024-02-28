@@ -1,6 +1,6 @@
 [
     {
       "name": "react",
-      "imageUri": "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/gayathri-ecr:latest"
+      "imageUri": "775422423362.dkr.ecr.ap-south-1.amazonaws.com/gayathri-ecr:latest"
     }
   ]
