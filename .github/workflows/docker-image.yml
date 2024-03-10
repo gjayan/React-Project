@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPO_NAME }}
+  IMAGE_TAG: latest
+
 jobs:
   deploy:
     name: Deploy
@@ -14,6 +19,19 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+
+    - name: Run Trivy vulnerability scanner in repo mode
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        # ignore-unfixed: true
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+      
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: 'trivy-fs-results.sarif'
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -26,27 +44,32 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build, tag, and push the image to Amazon ECR
+    - name: Build and tag an image from Dockerfile
       id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ secrets.ECR_REPO_NAME }}
-        IMAGE_TAG: latest
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile-gj .   
+
+    - name: Build, tag, and push the image to Amazon ECR
+      id: push-image
+      # env:
+      #   ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #   ECR_REPOSITORY: ${{ secrets.ECR_REPO_NAME }}
+      #   IMAGE_TAG: latest
       run: |
         # Build a docker container and push it to ECR 
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile-gj .
+        # docker build -t "${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -f Dockerfile-gj .
         echo "Pushing image to ECR..."
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push "${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        image-ref: "${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
         format: 'sarif'
         output: 'trivy-results.sarif'
 
     - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v1
       with:
-        sarif_file: 'trivy-results.sarif'
+        sarif_file: 'trivy-image-results.sarif'
