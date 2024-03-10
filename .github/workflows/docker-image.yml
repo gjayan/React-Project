@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+  ECR_REGISTRY: 775422423362.dkr.ecr.ap-south-1.amazonaws.com
   ECR_REPOSITORY: ${{ secrets.ECR_REPO_NAME }}
   IMAGE_TAG: latest
 
@@ -73,3 +73,48 @@ jobs:
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: 'trivy-image-results.sarif'
+
+
+
+  echo "${{ env.one }}"
+
+        name: trivy-scanning
+
+
+jobs:
+  trivy-scanning-job:
+    name: trivy-sec-scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'HIGH,CRITICAL'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Build an image from Dockerfile
+        run: |
+          docker build -t docker.io/devops-counsel/py-app:${{ github.sha }} .
+      
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'docker.io/devops-counsel/py-app:${{ github.sha }}'
+          format: 'table'
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+
+
+          
