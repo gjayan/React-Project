@@ -2,7 +2,7 @@ FROM node:10.15.2-alpine as builder
 
 COPY . .
 
-RUN npm install
+RUN sudo npm install
 
 RUN npm run-script build
 
