@@ -27,7 +27,7 @@ jobs:
         scan-type: 'fs'
         # ignore-unfixed: true
         format: 'sarif'
-        output: 'trivy-results.sarif'
+        output: 'trivy-fs-results.sarif'
       
     - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v2
@@ -68,7 +68,7 @@ jobs:
       with:
         image-ref: "${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
         format: 'sarif'
-        output: 'trivy-results.sarif'
+        output: 'trivy-image-results.sarif'
 
     - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v2
