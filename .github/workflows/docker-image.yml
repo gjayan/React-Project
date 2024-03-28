@@ -73,7 +73,7 @@ jobs:
     - name: ECS Deployment
       run: |
           chmod 711 task-definition-update.sh
-          ./task-definition-update.sh
+          ./task-definition-update.sh $IMAGE_TAG
 
     # - name: Upload Trivy scan results to GitHub Security tab
     #   uses: github/codeql-action/upload-sarif@v2
