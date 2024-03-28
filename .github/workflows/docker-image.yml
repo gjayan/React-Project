@@ -20,6 +20,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      run: ls
 
     - name: Run Trivy vulnerability scanner in repo mode
       uses: aquasecurity/trivy-action@master
@@ -70,7 +71,23 @@ jobs:
         format: 'sarif'
         output: 'trivy-image-results.sarif'
 
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: 'trivy-image-results.sarif'
+    - name: ECS Deployment
+      run: |
+          chmod 711 task-definition-update.sh
+          ./task-definition-update.sh
+
+    # - name: Upload Trivy scan results to GitHub Security tab
+    #   uses: github/codeql-action/upload-sarif@v2
+    #   with:
+    #     sarif_file: 'trivy-image-results.sarif'
+
+    # - name: Trivy scanning for aws services
+    #   uses: aquasecurity/trivy-action@master
+    #   run: trivy aws --service ecs --service ecr
+    #   with: 'trivy-aws-results.sarif'
+
+    # - name: Upload Trivy scan results to GitHub Security tab
+    #   uses: github/codeql-action/upload-sarif@v2
+    #   with:
+    #     sarif_file: 'trivy-aws-results.sarif'
+
